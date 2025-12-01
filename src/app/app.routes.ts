@@ -4,14 +4,9 @@ import { HomePage } from './Features/pokemon/pages/home-page/home-page';
 import { PokemonDetailPage } from './Features/pokemon/pages/pokemon-detail-page/pokemon-detail-page';
 
 export const routes: Routes = [
-  { path: '',
-    redirectTo: 'login',
-    pathMatch: 'full',
-  },
 
   {
-    path: 'login',
-
+    path: '',
     component: LoginPage,
   },
 
@@ -24,6 +19,6 @@ export const routes: Routes = [
   },
 
   { path: '**',
-    redirectTo: 'login',
+    redirectTo: '',
   },
 ];
