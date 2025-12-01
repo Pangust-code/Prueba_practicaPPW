@@ -1,0 +1,61 @@
+<section class="from-green-200 to-green-400 bg-linear-to-b min-h-screen p-4">
+  @if (pokemonData(); as pokemon) {
+  <article class=" from-cyan-300 to-cyan-100 bg-linear-to-b border-2 border-cyan-200 rounded-3xl max-w-2xl m-auto p-6">
+    <header class="text-center">
+      <h1 class="text-4xl font-bold capitalize">{{ pokemon.name }}</h1>
+    </header>
+
+    <figure class="text-center">
+      <img [src]="pokemon.sprites.front_default" alt="{{ pokemon.name }}" class="w-lg h-128 m-auto" />
+    </figure>
+
+    <section class="space-y-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <h3 class="font-semibold text-lg border-b-2 border-amber-950">Altura</h3>
+          <p class="text-gray-800 ">{{ pokemon.height / 10 }} m</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-lg border-b-2 border-amber-950">Peso</h3>
+          <p class="text-gray-800">{{ pokemon.weight / 10 }} kg</p>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-lg border-b-2 border-amber-950">Experiencia Base</h3>
+        <p class="text-gray-800">{{ pokemon.base_experience }}</p>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-lg border-b-2 border-amber-950">Tipos</h3>
+        <div class="flex gap-2 flex-wrap">
+          @for (t of pokemon.types; track $index) {
+          <span class="badge badge-primary">{{ t.type.name }}</span>
+          }
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-lg border-b-2 border-amber-950">Movimientos</h3>
+        <p class="text-gray-800">{{ pokemon.moves.length }} movimientos disponibles</p>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-lg border-b-2 border-amber-950">Habilidades</h3>
+        <div class="flex gap-2 flex-wrap">
+          @for (ab of pokemon.abilities; track $index) {
+          <span class="badge">{{ ab.ability.name }}</span>
+          }
+        </div>
+      </div>
+    </section>
+
+    <button class="btn btn-primary mt-6" (click)="back()">← Volver a inicio</button>
+  </article>
+  } @else if (isLoading()) {
+  <div class="flex justify-center items-center h-screen">
+    <span class="loading loading-spinner loading-lg"></span>
+  </div>
+  }
+
+</section>

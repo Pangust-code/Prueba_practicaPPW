@@ -1,0 +1,72 @@
+<section class="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-500 to-blue-700">
+  <article class="w-full max-w-md bg-white rounded-lg shadow-2xl p-8">
+    <header class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-800">Pokédex</h1>
+      <p class="text-gray-500 mt-2">Inicia sesión para continuar</p>
+    </header>
+
+    <form (ngSubmit)="submit()" [formGroup]="form" class="space-y-6" novalidate>
+      <!-- Email Input -->
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text font-semibold">Email</span>
+        </label>
+        <input
+          type="email"
+          formControlName="email"
+          class="input input-bordered w-full border-2 bg-gray-100 my-2 pl-1"
+          placeholder="usuario@ups.edu.ec"
+        />
+        @if (FormUtils.getFieldError(form, 'email')) {
+          <label class="label">
+            <span class="label-text-alt text-error">{{ FormUtils.getFieldError(form, 'email') }}</span>
+          </label>
+        }
+      </div>
+
+      <!-- Password Input -->
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text font-semibold">Contraseña</span>
+        </label>
+        <input
+          type="password"
+          formControlName="password"
+          class="input input-bordered w-full border-2 bg-gray-100 my-2 pl-1"
+          placeholder="Mínimo 6 caracteres"
+        />
+        @if (FormUtils.getFieldError(form, 'password')) {
+          <label class="label">
+            <span class="label-text-alt text-error">{{ FormUtils.getFieldError(form, 'password') }}</span>
+          </label>
+        }
+      </div>
+
+      <!-- Error Message -->
+      @if (error) {
+        <div class="alert alert-error">
+          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l-2-2m0 0l-2-2m2 2l2-2m-2 2l-2 2m2-2l2 2M9 9h.01M12 9h.01M15 9h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <span>{{ error }}</span>
+        </div>
+      }
+
+      <!-- Submit Button -->
+      <button
+        class="btn btn-primary p-1 rounded-2xl border-2 bg-amber-100 text-amber-800 hover:bg-amber-200 hover:border-amber-300"
+        type="submit"
+        [disabled]="form.invalid"
+      >
+        Iniciar Sesión
+      </button>
+    </form>
+
+    <!-- Demo Credentials -->
+    <div class="mt-8 pt-6 border-t border-gray-200">
+      <p class="text-center text-sm text-gray-600 mb-3">Credenciales de prueba:</p>
+      <div class="bg-gray-50 rounded p-3 space-y-1 text-sm">
+        <p><strong>Email:</strong> usuario@ups.edu.ec</p>
+        <p><strong>Contraseña:</strong> 123456</p>
+      </div>
+    </div>
+  </article>
+</section>
