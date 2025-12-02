@@ -1,9 +1,10 @@
-import { Component, OnInit, signal, effect, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, signal, effect, computed, Inject, Renderer2 } from '@angular/core';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PokemonService } from '../../services/PokemonService';
 import { forkJoin, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { Title, Meta } from '@angular/platform-browser';
 
 interface Stat {
   base_stat: number;
@@ -53,7 +54,7 @@ export class PokemonDetailPage implements OnInit {
     return Math.ceil(this.movesDetail().length / this.movesPerPage);
   });
 
-  constructor(private route: ActivatedRoute, private svc: PokemonService, private router: Router) {
+  constructor(private route: ActivatedRoute, private svc: PokemonService, private router: Router, private title: Title, private meta: Meta, private renderer: Renderer2, @Inject(DOCUMENT) private document: Document) {
     effect(() => {
       const id = this.pokemonId();
       if (id) this.loadPokemon(id);
@@ -73,6 +74,45 @@ export class PokemonDetailPage implements OnInit {
         this.pokemonData.set(data as PokemonDetail);
         this.allMoves.set(data.moves || []);
         this.loadMovesDetail(data.moves);
+        // SEO: set title/meta and canonical for this pokemon
+        const name = data.name || 'Pokemon';
+        this.title.setTitle(`${name} — Pokédex | PruebaPPW`);
+        const types = (data.types || []).map((t: any) => t.type.name).join(', ');
+        this.meta.updateTag({ name: 'description', content: `${name} — Tipos: ${types}. Consulta estadísticas, movimientos y habilidades.` });
+        // Add or update canonical link
+        let link: HTMLLinkElement | null = this.document.querySelector("link[rel='canonical']");
+        const url = `${this.document.location.origin}/pokemon/${data.id}`;
+        if (!link) {
+          link = this.renderer.createElement('link');
+          this.renderer.setAttribute(link, 'rel', 'canonical');
+          this.renderer.appendChild(this.document.head, link);
+        }
+        this.renderer.setAttribute(link, 'href', url);
+
+        // Inject JSON-LD structured data for the Pokemon
+        try {
+          const jsonLd = {
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": name,
+            "image": data.sprites?.front_default || '',
+            "description": `Ficha de ${name} en la Pokédex. Tipos: ${types}`
+          };
+          const scriptId = `jsonld-pokemon-${data.id}`;
+          let existing = this.document.getElementById(scriptId) as HTMLScriptElement | null;
+          if (existing) {
+            existing.textContent = JSON.stringify(jsonLd);
+          } else {
+            const s = this.renderer.createElement('script');
+            this.renderer.setAttribute(s, 'type', 'application/ld+json');
+            this.renderer.setAttribute(s, 'id', scriptId);
+            s.textContent = JSON.stringify(jsonLd);
+            this.renderer.appendChild(this.document.head, s);
+          }
+        } catch (e) {
+          // ignore JSON-LD failures
+        }
+
         this.isLoading.set(false);
       },
       error: () => this.isLoading.set(false)

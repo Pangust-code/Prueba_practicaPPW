@@ -27,7 +27,7 @@
             <article class="p-4 card card-compact bg-base-100 shadow-lg hover:shadow-xl transition-shadow cursor-pointer h-full rounded-2xl border border-blue-500">
               <figure class="text-center py-4">
                 @if (pokemon.image) {
-                  <img [src]="pokemon.image" [alt]="pokemon.name" class="w-32 h-32 object-contain mx-auto" />
+                  <img [src]="pokemon.image" [alt]="pokemon.name" loading="lazy" width="128" height="128" class="w-32 h-32 object-contain mx-auto" />
                 } @else {
                   <div class="w-32 h-32 bg-gray-200 rounded-lg mx-auto flex items-center justify-center">
                     <span class="text-gray-400">Sin imagen</span>

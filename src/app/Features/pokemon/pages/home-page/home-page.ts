@@ -1,9 +1,10 @@
-import { Component, signal, computed, effect, OnInit } from '@angular/core';
+import { Component, signal, computed, effect, OnInit, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PokemonService } from '../../services/PokemonService';
 import { forkJoin, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { Title, Meta } from '@angular/platform-browser';
 
 interface PokemonItem {
   name: string;
@@ -33,7 +34,7 @@ export class HomePage implements OnInit {
   total = computed(() => this.pokemonData()?.count || 0);
   lastPageStart = computed(() => Math.max(0, Math.floor((this.total() - 1) / this.limit) * this.limit));
 
-  constructor(private svc: PokemonService, private router: Router, private route: ActivatedRoute) {
+  constructor(private svc: PokemonService, private router: Router, private route: ActivatedRoute, private title: Title, private meta: Meta) {
     effect(() => {
       const offset = this.offset();
       this.loadPokemon(offset);
@@ -56,6 +57,10 @@ export class HomePage implements OnInit {
     if (param !== null && !isNaN(Number(param))) {
       this.offset.set(Number(param));
     }
+    // SEO: set page title and description (include current page number)
+    const page = Math.floor(this.offset() / this.limit) + 1;
+    this.title.setTitle(`Pokédex - Página ${page} | PruebaPPW`);
+    this.meta.updateTag({ name: 'description', content: `Lista de Pokémon — página ${page}. Explora imágenes, nombres y navega en la Pokédex.` });
   }
 
   private loadPokemon(offset: number): void {
