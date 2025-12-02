@@ -17,6 +17,10 @@ export class PokemonService {
     return this.http.get(`${BASE}/${id}`);
   }
 
+  getMove(moveUrl: string) {
+    return this.http.get<any>(moveUrl);
+  }
+
   // ayuda: extraer id desde la url de result
   extractIdFromUrl(url: string) {
     const parts = url.split('/').filter(Boolean);

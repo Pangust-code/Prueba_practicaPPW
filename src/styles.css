@@ -1,3 +1,28 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import "tailwindcss";
+
+/* Global button underline + hover/active behavior
+	 - Underline text for buttons
+	 - Make font semi-bold on hover
+	 - Subtle background color change on active (click)
+	 These rules target the common `btn` class used by DaisyUI/Tailwind buttons
+*/
+.btn {
+	text-decoration: underline;
+	transition: background-color 120ms ease, color 120ms ease, font-weight 120ms ease;
+}
+
+.btn:hover {
+	font-weight: 600;
+}
+
+.btn:active {
+	background-color: rgba(0, 0, 0, 0.06);
+}
+
+/* Keep focus-visible accessible outline but subtle */
+.btn:focus-visible {
+	outline: 2px solid rgba(0,0,0,0.12);
+	outline-offset: 2px;
+}

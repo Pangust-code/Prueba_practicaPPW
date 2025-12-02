@@ -30,21 +30,67 @@
         <h3 class="font-semibold text-lg border-b-2 border-amber-950">Tipos</h3>
         <div class="flex gap-2 flex-wrap">
           @for (t of pokemon.types; track $index) {
-          <span class="badge badge-primary">{{ t.type.name }}</span>
+          <span class="badge badge-lg font-semibold capitalize px-4 py-2 text-gray-900 border-2 border-gray-300 mt-4" [ngClass]="getTypeColor(t.type.name)">{{ t.type.name }}</span>
           }
         </div>
       </div>
 
       <div>
-        <h3 class="font-semibold text-lg border-b-2 border-amber-950">Movimientos</h3>
-        <p class="text-gray-800">{{ pokemon.moves.length }} movimientos disponibles</p>
+        <h3 class="font-semibold text-lg border-b-2 border-amber-950">Estadísticas</h3>
+        <div class="space-y-3 mt-2">
+          @for (stat of pokemon.stats; track stat.stat.name) {
+          <div>
+            <div class="flex justify-between mb-1">
+              <span class="text-sm font-medium capitalize">{{ stat.stat.name }}</span>
+              <span class="text-sm font-bold">{{ stat.base_stat }}/150</span>
+            </div>
+            <div class="w-full bg-gray-300 rounded-full h-3 overflow-hidden">
+              <div
+                class="bg-linear-to-r from-cyan-400 to-blue-500 h-full transition-all duration-500"
+                [style.width.%]="(stat.base_stat / 150) * 100">
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-lg border-b-2 border-amber-950">Movimientos Disponibles</h3>
+        @if (visibleMoves().length > 0) {
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
+          @for (move of visibleMoves(); track move.name) {
+          <div class="rounded-lg p-4 border-2 text-gray-900 shadow-md" [ngClass]="getMoveTypeColor(move.type)">
+            <div class="flex justify-between items-start mb-2">
+              <h4 class="font-bold capitalize text-lg">{{ move.name }}</h4>
+              <span class="badge badge-lg font-semibold capitalize text-gray-800" [ngClass]="getMoveTypeBadgeClass(move.type)">{{ move.type }}</span>
+            </div>
+            <div class="flex gap-2 text-sm">
+              @if (move.power > 0) {
+              <span class="bg-black bg-opacity-20 text-white px-3 py-1 rounded font-semibold">💪 {{ move.power }}</span>
+              }
+              @if (move.accuracy > 0) {
+              <span class="bg-black bg-opacity-20 text-white px-3 py-1 rounded font-semibold">🎯 {{ move.accuracy }}%</span>
+              }
+            </div>
+          </div>
+          }
+        </div>
+        <div class="flex justify-between items-center mt-4 gap-2">
+          <button class="btn btn-outline" [disabled]="currentPage() === 0" (click)="prevPage()">← Anterior</button>
+          <span class="text-sm font-semibold">Página {{ currentPage() + 1 }} de {{ totalPages() }}</span>
+          <button class="btn btn-outline" [disabled]="currentPage() >= totalPages() - 1" (click)="nextPage()">Siguiente →</button>
+        </div>
+        } @else {
+        <p class="text-gray-600 text-sm mt-2">Cargando movimientos...</p>
+        }
       </div>
 
       <div>
         <h3 class="font-semibold text-lg border-b-2 border-amber-950">Habilidades</h3>
         <div class="flex gap-2 flex-wrap">
           @for (ab of pokemon.abilities; track $index) {
-          <span class="badge">{{ ab.ability.name }}</span>
+          <span class="badge badge-lg font-semibold capitalize px-4 py-2 text-gray-900 border-2 border-gray-300 mt-4" [ngClass]="getAbilityColor(ab.ability.name)">{{ ab.ability.name }}</span>
           }
         </div>
       </div>
